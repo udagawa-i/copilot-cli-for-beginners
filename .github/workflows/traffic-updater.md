@@ -9,6 +9,10 @@ tools:
   edit:
   github:
     toolsets: [repos]
+# NOTE: After running `gh aw compile`, manually add the following env var
+# to the agent step in the lock file (the step that runs `copilot`):
+#   GH_TOKEN: ${{ secrets.GH_AW_GITHUB_TOKEN }}
+# This is required because engine.env is not yet supported by the compiler.
 safe-outputs:
   allowed-domains:
     - github.com
