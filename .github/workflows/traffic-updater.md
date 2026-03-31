@@ -19,6 +19,8 @@ mcp-scripts:
 safe-outputs:
   allowed-domains:
     - github.com
+  noop:
+    report-as-issue: false
   create-pull-request:
     labels: [automated-update, traffic-data]
     title-prefix: "[bot] "
