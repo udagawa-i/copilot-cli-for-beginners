@@ -70,3 +70,40 @@ class BookCollection:
     def find_by_author(self, author: str) -> List[Book]:
         """Find all books by a given author."""
         return [b for b in self.books if b.author.lower() == author.lower()]
+
+    def list_by_year(self, start: int, end: int) -> List[Book]:
+        """Find books published within an inclusive year range."""
+        return [book for book in self.books if start <= book.year <= end]
+
+    def search_books(
+        self,
+        title: str = "",
+        author: str = "",
+        start_year: Optional[int] = None,
+        end_year: Optional[int] = None,
+    ) -> List[Book]:
+        """Find books by title, author, publication year range, or any combination."""
+        normalized_title = title.strip().lower()
+        normalized_author = author.strip().lower()
+
+        if (
+            not normalized_title
+            and not normalized_author
+            and start_year is None
+            and end_year is None
+        ):
+            return []
+
+        return [
+            book
+            for book in self.books
+            if (
+                not normalized_title or normalized_title in book.title.lower()
+            ) and (
+                not normalized_author or normalized_author in book.author.lower()
+            ) and (
+                start_year is None or book.year >= start_year
+            ) and (
+                end_year is None or book.year <= end_year
+            )
+        ]
