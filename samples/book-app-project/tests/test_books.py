@@ -51,3 +51,57 @@ def test_remove_book_invalid():
     collection = BookCollection()
     result = collection.remove_book("Nonexistent Book")
     assert result is False
+
+def test_get_unread_books_empty_collection():
+    """Empty collection returns empty list of unread books."""
+    collection = BookCollection()
+    unread = collection.get_unread_books()
+    assert unread == []
+
+def test_get_unread_books_all_unread():
+    """All unread books are returned when all books are unread."""
+    collection = BookCollection()
+    collection.add_book("1984", "George Orwell", 1949)
+    collection.add_book("Dune", "Frank Herbert", 1965)
+    collection.add_book("The Hobbit", "J.R.R. Tolkien", 1937)
+    
+    unread = collection.get_unread_books()
+    assert len(unread) == 3
+    assert all(not book.read for book in unread)
+
+def test_get_unread_books_mixed_status():
+    """Only unread books are returned when collection has mixed read status."""
+    collection = BookCollection()
+    collection.add_book("1984", "George Orwell", 1949)
+    collection.add_book("Dune", "Frank Herbert", 1965)
+    collection.add_book("The Hobbit", "J.R.R. Tolkien", 1937)
+    
+    collection.mark_as_read("1984")
+    collection.mark_as_read("The Hobbit")
+    
+    unread = collection.get_unread_books()
+    assert len(unread) == 1
+    assert unread[0].title == "Dune"
+    assert all(not book.read for book in unread)
+
+def test_get_unread_books_all_read():
+    """Empty list is returned when all books are marked as read."""
+    collection = BookCollection()
+    collection.add_book("1984", "George Orwell", 1949)
+    collection.add_book("Dune", "Frank Herbert", 1965)
+    
+    collection.mark_as_read("1984")
+    collection.mark_as_read("Dune")
+    
+    unread = collection.get_unread_books()
+    assert unread == []
+
+def test_get_unread_books_returns_independent_list():
+    """get_unread_books returns independent list, not reference to internal list."""
+    collection = BookCollection()
+    collection.add_book("1984", "George Orwell", 1949)
+    
+    unread = collection.get_unread_books()
+    unread.clear()
+    
+    assert len(collection.books) == 1
