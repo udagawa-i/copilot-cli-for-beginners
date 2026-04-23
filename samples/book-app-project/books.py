@@ -72,8 +72,11 @@ class BookCollection:
         return False
 
     def find_by_author(self, author: str) -> List[Book]:
-        """Find all books by a given author."""
-        return [b for b in self.books if b.author.lower() == author.lower()]
+        """Find all books by a given author (supports partial matching)."""
+        normalized_author = author.strip().lower()
+        if not normalized_author:
+            return []
+        return [b for b in self.books if normalized_author in b.author.lower()]
 
     def list_by_year(self, start: int, end: int) -> List[Book]:
         """Find books published within an inclusive year range."""

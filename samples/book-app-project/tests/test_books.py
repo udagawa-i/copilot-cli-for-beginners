@@ -105,3 +105,93 @@ def test_get_unread_books_returns_independent_list():
     unread.clear()
     
     assert len(collection.books) == 1
+
+
+def test_find_by_author_exact_match():
+    """Exact match for author name returns correct books."""
+    collection = BookCollection()
+    collection.add_book("1984", "George Orwell", 1949)
+    collection.add_book("Animal Farm", "George Orwell", 1945)
+    collection.add_book("Dune", "Frank Herbert", 1965)
+    
+    result = collection.find_by_author("George Orwell")
+    assert len(result) == 2
+    assert result[0].title == "1984"
+    assert result[1].title == "Animal Farm"
+
+
+def test_find_by_author_partial_match_first_name():
+    """Partial match with first name returns correct books."""
+    collection = BookCollection()
+    collection.add_book("1984", "George Orwell", 1949)
+    collection.add_book("Animal Farm", "George Orwell", 1945)
+    collection.add_book("Dune", "Frank Herbert", 1965)
+    
+    result = collection.find_by_author("George")
+    assert len(result) == 2
+
+
+def test_find_by_author_partial_match_last_name():
+    """Partial match with last name returns correct books."""
+    collection = BookCollection()
+    collection.add_book("1984", "George Orwell", 1949)
+    collection.add_book("Animal Farm", "George Orwell", 1945)
+    collection.add_book("Dune", "Frank Herbert", 1965)
+    
+    result = collection.find_by_author("Orwell")
+    assert len(result) == 2
+
+
+def test_find_by_author_case_insensitive():
+    """Author search is case insensitive."""
+    collection = BookCollection()
+    collection.add_book("1984", "George Orwell", 1949)
+    
+    result = collection.find_by_author("GEORGE ORWELL")
+    assert len(result) == 1
+    assert result[0].title == "1984"
+    
+    result = collection.find_by_author("george orwell")
+    assert len(result) == 1
+
+
+def test_find_by_author_empty_string():
+    """Empty author string returns empty list."""
+    collection = BookCollection()
+    collection.add_book("1984", "George Orwell", 1949)
+    
+    result = collection.find_by_author("")
+    assert result == []
+
+
+def test_find_by_author_whitespace_only():
+    """Whitespace-only author string returns empty list."""
+    collection = BookCollection()
+    collection.add_book("1984", "George Orwell", 1949)
+    
+    result = collection.find_by_author("   ")
+    assert result == []
+
+
+def test_find_by_author_no_match():
+    """Non-existent author returns empty list."""
+    collection = BookCollection()
+    collection.add_book("1984", "George Orwell", 1949)
+    
+    result = collection.find_by_author("Unknown Author")
+    assert result == []
+
+
+def test_search_books_author_partial_match():
+    """search_books with partial author match returns correct books."""
+    collection = BookCollection()
+    collection.add_book("1984", "George Orwell", 1949)
+    collection.add_book("Animal Farm", "George Orwell", 1945)
+    collection.add_book("Dune", "Frank Herbert", 1965)
+    
+    result = collection.search_books(author="George")
+    assert len(result) == 2
+    
+    result = collection.search_books(author="Herbert")
+    assert len(result) == 1
+
